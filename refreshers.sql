@@ -1,5 +1,5 @@
 delimiter $$
-create definer = rklem@localhost procedure refresh_mv_comp_regression__berkelium_conf()
+create definer = rklem@localhost procedure refresh_mv_compiler_regression__berkelium_conf()
 BEGIN
 START TRANSACTION;
   DELETE FROM mv_compiler_regression__berkelium_conf;

@@ -1,5 +1,5 @@
 delimiter $$
-create definer = rklem@localhost procedure refresh_new_mw_comp_regression__berkelium_conf()
+create definer = rklem@localhost procedure refresh_new_mv_compiler_regression__berkelium_conf()
 BEGIN
 START TRANSACTION;
   DELETE FROM mv_compiler_regression__berkelium_conf;
@@ -34,7 +34,7 @@ COMMIT;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_new_mw_compiler_regression__berkelium_links()
+create definer = rklem@localhost procedure refresh_new_mv_compiler_regression__berkelium_links()
 BEGIN
 START TRANSACTION;
 DELETE FROM mv_compiler_regression__berkelium_links;
@@ -76,7 +76,7 @@ DELETE FROM mv_compiler_regression__berkelium_links;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_new_mw_compiler_regression__berkelium_sum_by_build()
+create definer = rklem@localhost procedure refresh_new_mv_compiler_regression__berkelium_sum_by_build()
 BEGIN
   START TRANSACTION;
   DELETE FROM mv_compiler_regression__berkelium_sum_by_build;
@@ -151,7 +151,7 @@ BEGIN
 END $$
 
 
-create definer = rklem@localhost procedure refresh_new_mw_compiler_regression__codix_by_ip()
+create definer = rklem@localhost procedure refresh_new_mv_compiler_regression__codix_by_ip()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__codix_by_ip;
@@ -191,7 +191,7 @@ BEGIN
 COMMIT;
 END $$
 
-create definer = rklem@localhost procedure refresh_new_mw_compiler_regression__codix_links()
+create definer = rklem@localhost procedure refresh_new_mv_compiler_regression__codix_links()
 BEGIN
 START TRANSACTION;
 DELETE FROM mv_compiler_regression__codix_links;
@@ -237,7 +237,7 @@ DELETE FROM mv_compiler_regression__codix_links;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_new_mw_compiler_regression__custom_by_ip()
+create definer = rklem@localhost procedure refresh_new_mv_compiler_regression__custom_by_ip()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__custom_by_ip;
@@ -275,7 +275,7 @@ BEGIN
 COMMIT;
 END $$
 
-create definer = rklem@localhost procedure refresh_new_mw_compiler_regression__custom_links()
+create definer = rklem@localhost procedure refresh_new_mv_compiler_regression__custom_links()
 BEGIN
 START TRANSACTION;
 DELETE FROM mv_compiler_regression__custom_links;
@@ -320,7 +320,7 @@ DELETE FROM mv_compiler_regression__custom_links;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_new_mw_compiler_regression__helium_by_conf()
+create definer = rklem@localhost procedure refresh_new_mv_compiler_regression__helium_by_conf()
 BEGIN
   START TRANSACTION;
   DELETE FROM mv_compiler_regression__helium_by_conf;
@@ -724,7 +724,10 @@ BEGIN
     -- make command
     SET @command = CONCAT('call ', proc1, '();');
     PREPARE command_to_exec FROM @command;
+
+    set @start_time = now();
     execute command_to_exec;
+    set @duration = timediff(now(), @start_time);
 
     -- if everything was OK, code is 0, set success msg
     IF code = '00000' THEN
@@ -732,11 +735,12 @@ BEGIN
     END IF;
 
     START TRANSACTION; -- safe write, when error occurs, undo operation is done
-    INSERT INTO `refresh_events_log` (`date_and_time`, `procedure_name`, `mysql_return_code`, `message`)
+    INSERT INTO `refresh_events_log` (`date_and_time`, `procedure_name`, `mysql_return_code`, `message`, `duration`)
     SELECT CAST(NOW() as datetime) as 'date and time',
            proc1 as 'procedure name',
            code as 'mysql return code',
-           msg as 'message'
+           msg as 'message',
+           @duration as 'duration'
     order by `date and time` desc;
     COMMIT; -- push what we have selected
     DEALLOCATE PREPARE command_to_exec;
