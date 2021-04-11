@@ -1,9 +1,9 @@
 delimiter $$
-create definer = rklem@localhost procedure refresh_mv_tests_compiler_regression__berkelium_by_configuration()
+create definer = rklem@localhost procedure refresh_mv_comp_regression__berkelium_conf()
 BEGIN
 START TRANSACTION;
-  DELETE FROM mv_tests_compiler_regression__berkelium_by_configuration;
-  INSERT INTO mv_tests_compiler_regression__berkelium_by_configuration (`date`,`version`,`build_id`,`model_name`,`configuration`,`ip_branch`,`failed_tests`,`passed_tests`)
+  DELETE FROM mv_compiler_regression__berkelium_conf;
+  INSERT INTO mv_compiler_regression__berkelium_conf (`date`,`version`,`build_id`,`model_name`,`configuration`,`ip_branch`,`failed_tests`,`passed_tests`)
     SELECT
     `artifacts`.`created` AS `Date`,
     `artifacts`.`version` AS `version`,
@@ -34,11 +34,11 @@ COMMIT;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_tests_compiler_regression__berkelium_fails_links()
+create definer = rklem@localhost procedure refresh_mv_compiler_regression__berkelium_links()
 BEGIN
 START TRANSACTION;
-DELETE FROM mv_tests_compiler_regression__berkelium_fails_links;
-  INSERT INTO mv_tests_compiler_regression__berkelium_fails_links (`branch`,`date`,`version`,`build_id`,`OS`,`compiler`, `model_name`,`configuration`,`parameters`,`test_status`,`link_full`)
+DELETE FROM mv_compiler_regression__berkelium_links;
+  INSERT INTO mv_compiler_regression__berkelium_links (`branch`,`date`,`version`,`build_id`,`OS`,`compiler`, `model_name`,`configuration`,`parameters`,`test_status`,`link_full`)
     SELECT
 		`sources`.`branch`					 AS `branch`,
         `artifacts`.`created`                AS `date`,
@@ -76,11 +76,11 @@ DELETE FROM mv_tests_compiler_regression__berkelium_fails_links;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_tests_compiler_regression__berkelium_sum_by_build()
+create definer = rklem@localhost procedure refresh_mv_compiler_regression__berkelium_sum_by_build()
 BEGIN
   START TRANSACTION;
-  DELETE FROM mv_tests_compiler_regression__berkelium_sum_by_build;
-  INSERT INTO mv_tests_compiler_regression__berkelium_sum_by_build (`date`,`version_and_build_id`,`failed_tests_ia`,`passed_tests_ia`,`sum_tests_ia`,`failed_tests_ca`,`passed_tests_ca`,`sum_tests_ca`)
+  DELETE FROM mv_compiler_regression__berkelium_sum_by_build;
+  INSERT INTO mv_compiler_regression__berkelium_sum_by_build (`date`,`version_and_build_id`,`failed_tests_ia`,`passed_tests_ia`,`sum_tests_ia`,`failed_tests_ca`,`passed_tests_ca`,`sum_tests_ca`)
     SELECT
         `artifacts`.`created` AS `date`,
         CONCAT_WS('-',
@@ -151,11 +151,11 @@ BEGIN
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_tests_compiler_regression__codix_by_ip()
+create definer = rklem@localhost procedure refresh_mv_compiler_regression__codix_by_ip()
 BEGIN
 	START TRANSACTION;
-	DELETE FROM mv_tests_compiler_regression__codix_by_ip;
-	INSERT INTO mv_tests_compiler_regression__codix_by_ip (`date`, `version`, `build_id`, `ip_name`, `ip_branch`, `failed_tests`, `passed_tests`)
+	DELETE FROM mv_compiler_regression__codix_by_ip;
+	INSERT INTO mv_compiler_regression__codix_by_ip (`date`, `version`, `build_id`, `ip_name`, `ip_branch`, `failed_tests`, `passed_tests`)
 		select
 		    `artifacts`.`created` AS `date`,
 		    `artifacts`.`version` AS `version`,
@@ -191,11 +191,11 @@ BEGIN
 COMMIT;
 END $$
 
-create definer = rklem@localhost procedure refresh_mv_tests_compiler_regression__codix_fails_links()
+create definer = rklem@localhost procedure refresh_mv_compiler_regression__codix_links()
 BEGIN
 START TRANSACTION;
-DELETE FROM mv_tests_compiler_regression__codix_fails_links;
-  INSERT INTO mv_tests_compiler_regression__codix_fails_links (`date`,`parameters`, `version`,`build_id`,`os`,`compiler`,`ip_name`, `test_status`,`link_full`)
+DELETE FROM mv_compiler_regression__codix_links;
+  INSERT INTO mv_compiler_regression__codix_links (`date`,`parameters`, `version`,`build_id`,`os`,`compiler`,`ip_name`, `test_status`,`link_full`)
     select
     `artifacts`.`created` AS `date`,
     `tests`.`parameters` AS `parameters`,
@@ -237,11 +237,11 @@ DELETE FROM mv_tests_compiler_regression__codix_fails_links;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_tests_compiler_regression__customer_by_ip()
+create definer = rklem@localhost procedure refresh_mv_compiler_regression__custom_by_ip()
 BEGIN
 	START TRANSACTION;
-	DELETE FROM mv_tests_compiler_regression__customer_by_ip;
-	INSERT INTO mv_tests_compiler_regression__customer_by_ip (`date`, `version`, `build_id`, `ip_name`, `ip_branch`, `failed_tests`, `passed_tests`)
+	DELETE FROM mv_compiler_regression__custom_by_ip;
+	INSERT INTO mv_compiler_regression__custom_by_ip (`date`, `version`, `build_id`, `ip_name`, `ip_branch`, `failed_tests`, `passed_tests`)
 		select
 	    `artifacts`.`created` AS `date`,
 	    `artifacts`.`version` AS `version`,
@@ -275,11 +275,11 @@ BEGIN
 COMMIT;
 END $$
 
-create definer = rklem@localhost procedure refresh_mv_tests_compiler_regression__customer_fails_links()
+create definer = rklem@localhost procedure refresh_mv_compiler_regression__custom_links()
 BEGIN
 START TRANSACTION;
-DELETE FROM mv_tests_compiler_regression__customer_fails_links;
-  INSERT INTO mv_tests_compiler_regression__customer_fails_links (`date`,`parameters`, `version`,`build_id`,`os`,`compiler`, `branch`,`ip_name`, `test_status`,`link_full`)
+DELETE FROM mv_compiler_regression__custom_links;
+  INSERT INTO mv_compiler_regression__custom_links (`date`,`parameters`, `version`,`build_id`,`os`,`compiler`, `branch`,`ip_name`, `test_status`,`link_full`)
     select
     `artifacts`.`created` AS `date`,
     `tests`.`parameters` AS `parameters`,
@@ -320,11 +320,11 @@ DELETE FROM mv_tests_compiler_regression__customer_fails_links;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_tests_compiler_regression__helium_by_configuration()
+create definer = rklem@localhost procedure refresh_mv_compiler_regression__helium_by_conf()
 BEGIN
   START TRANSACTION;
-  DELETE FROM mv_tests_compiler_regression__helium_by_configuration;
-  INSERT INTO mv_tests_compiler_regression__helium_by_configuration (`date`,`version`,`build_id`,`ip_name`,`configuration`,`failed_tests`,`passed_tests`)
+  DELETE FROM mv_compiler_regression__helium_by_conf;
+  INSERT INTO mv_compiler_regression__helium_by_conf (`date`,`version`,`build_id`,`ip_name`,`configuration`,`failed_tests`,`passed_tests`)
     SELECT
     `artifacts`.`created` AS `Date`,
     `artifacts`.`version` AS `Version`,
@@ -354,11 +354,11 @@ ORDER BY `artifacts`.`created` DESC , `failed tests` DESC , `passed tests` DESC;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_tests_compiler_regression__helium_fails_links()
+create definer = rklem@localhost procedure refresh_mv_compiler_regression__helium_links()
 BEGIN
 START TRANSACTION;
-  DELETE FROM mv_tests_compiler_regression__helium_fails_links;
-  INSERT INTO mv_tests_compiler_regression__helium_fails_links (`parameters`,`version`,`build_id`,`OS`,`compiler`,`configuration`,`date`, `test_status`,`link_full`)
+  DELETE FROM mv_compiler_regression__helium_links;
+  INSERT INTO mv_compiler_regression__helium_links (`parameters`,`version`,`build_id`,`OS`,`compiler`,`configuration`,`date`, `test_status`,`link_full`)
     SELECT
         `tests`.`parameters` AS `parameters`,
         `artifacts`.`version` AS `version`,
@@ -395,11 +395,11 @@ START TRANSACTION;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_tests_compiler_regression__helium_sum_by_build()
+create definer = rklem@localhost procedure refresh_mv_compiler_regression__helium_sum_by_build()
 BEGIN
 START TRANSACTION;
-  DELETE FROM mv_tests_compiler_regression__helium_sum_by_build;
-  INSERT INTO mv_tests_compiler_regression__helium_sum_by_build (`date`,`version_and_build_id`,`failed_tests_ia`,`passed_tests_ia`,`sum_tests_ia`,`failed_tests_ca`,`passed_tests_ca`,`sum_tests_ca`)
+  DELETE FROM mv_compiler_regression__helium_sum_by_build;
+  INSERT INTO mv_compiler_regression__helium_sum_by_build (`date`,`version_and_build_id`,`failed_tests_ia`,`passed_tests_ia`,`sum_tests_ia`,`failed_tests_ca`,`passed_tests_ca`,`sum_tests_ca`)
     SELECT
         `artifacts`.`created` AS `date`,
         CONCAT_WS('-',
@@ -470,12 +470,12 @@ START TRANSACTION;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_tests_compiler_regression__urisc_by_branch()
+create definer = rklem@localhost procedure refresh_mv_compiler_regression__urisc_by_branch()
 BEGIN
 	START TRANSACTION;
-	DELETE FROM mv_tests_compiler_regression__urisc_by_branch;
+	DELETE FROM mv_compiler_regression__urisc_by_branch;
 
-	INSERT INTO mv_tests_compiler_regression__urisc_by_branch (`date`,version,build_id,model_name,branch,failed_tests,passed_tests)
+	INSERT INTO mv_compiler_regression__urisc_by_branch (`date`,version,build_id,model_name,branch,failed_tests,passed_tests)
 	SELECT
 		`artifacts`.`created` AS `Date`,
 		`artifacts`.`version` AS `version`,
@@ -502,11 +502,11 @@ BEGIN
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_tests_compiler_regression__urisc_fails_links()
+create definer = rklem@localhost procedure refresh_mv_compiler_regression__urisc_links()
 BEGIN
 	START TRANSACTION;
-	DELETE FROM mv_tests_compiler_regression__urisc_fails_links;
-	INSERT INTO mv_tests_compiler_regression__urisc_fails_links (`parameters`,`version`,`build_id`,`OS`,`compiler`,`branch`, `model_name`,`date`, `test_status`,`link_full`)
+	DELETE FROM mv_compiler_regression__urisc_links;
+	INSERT INTO mv_compiler_regression__urisc_links (`parameters`,`version`,`build_id`,`OS`,`compiler`,`branch`, `model_name`,`date`, `test_status`,`link_full`)
 	SELECT
 		`tests`.`parameters` AS `parameters`,
 		`artifacts`.`version` AS `version`,
@@ -543,11 +543,11 @@ BEGIN
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_tests_compiler_regression__urisc_sum_by_build()
+create definer = rklem@localhost procedure refresh_mv_compiler_regression__urisc_sum_by_build()
 BEGIN
 	START TRANSACTION;
-	DELETE FROM mv_tests_compiler_regression__urisc_sum_by_build;
-	INSERT INTO mv_tests_compiler_regression__urisc_sum_by_build (`date`,`version_and_build_id`,`failed_tests_ia`,`passed_tests_ia`,`sum_tests_ia`,`failed_tests_ca`,`passed_tests_ca`,`sum_tests_ca`)
+	DELETE FROM mv_compiler_regression__urisc_sum_by_build;
+	INSERT INTO mv_compiler_regression__urisc_sum_by_build (`date`,`version_and_build_id`,`failed_tests_ia`,`passed_tests_ia`,`sum_tests_ia`,`failed_tests_ca`,`passed_tests_ca`,`sum_tests_ca`)
 	 SELECT
 		`artifacts`.`created` AS `date`,
 		CONCAT_WS('-',`artifacts`.`version`,NULL,`artifacts`.`build`) AS `build_id`,
@@ -590,12 +590,12 @@ BEGIN
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_tests_compiler_regression__uvliw_by_branch()
+create definer = rklem@localhost procedure refresh_mv_compiler_regression__uvliw_by_branch()
 BEGIN
 	START TRANSACTION;
-		DELETE FROM mv_tests_compiler_regression__uvliw_by_branch;
+		DELETE FROM mv_compiler_regression__uvliw_by_branch;
 
-		INSERT INTO mv_tests_compiler_regression__uvliw_by_branch (date, version, build_id, ip_name, branch, failed_tests, passed_tests)
+		INSERT INTO mv_compiler_regression__uvliw_by_branch (date, version, build_id, ip_name, branch, failed_tests, passed_tests)
 			SELECT
 				`artifacts`.`created` AS `Date`,
 				`artifacts`.`version` AS `Version`,
@@ -622,11 +622,11 @@ BEGIN
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_tests_compiler_regression__uvliw_fails_links()
+create definer = rklem@localhost procedure refresh_mv_compiler_regression__uvliw_links()
 BEGIN
 	START TRANSACTION;
-	DELETE FROM mv_tests_compiler_regression__uvliw_fails_links;
-	INSERT INTO mv_tests_compiler_regression__uvliw_fails_links (`parameters`,`version`,`build_id`,`OS`,`compiler`,`branch`,`date`,`test_status`,`link_full`)
+	DELETE FROM mv_compiler_regression__uvliw_links;
+	INSERT INTO mv_compiler_regression__uvliw_links (`parameters`,`version`,`build_id`,`OS`,`compiler`,`branch`,`date`,`test_status`,`link_full`)
 		SELECT
 			`tests`.`parameters` AS `parameters`,
 			`artifacts`.`version` AS `version`,
@@ -662,11 +662,11 @@ BEGIN
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_tests_compiler_regression__uvliw_sum_by_build()
+create definer = rklem@localhost procedure refresh_mv_compiler_regression__uvliw_sum_by_build()
 BEGIN
 	START TRANSACTION;
-	DELETE FROM mv_tests_compiler_regression__uvliw_sum_by_build;
-	INSERT INTO mv_tests_compiler_regression__uvliw_sum_by_build (`date`,`version_and_build_id`,`failed_tests_ia`,`passed_tests_ia`,`sum_tests_ia`,`failed_tests_ca`,`passed_tests_ca`,`sum_tests_ca`)
+	DELETE FROM mv_compiler_regression__uvliw_sum_by_build;
+	INSERT INTO mv_compiler_regression__uvliw_sum_by_build (`date`,`version_and_build_id`,`failed_tests_ia`,`passed_tests_ia`,`sum_tests_ia`,`failed_tests_ca`,`passed_tests_ca`,`sum_tests_ca`)
 		 SELECT
 			`artifacts`.`created` AS `date`,
 			CONCAT_WS('-',`artifacts`.`version`,NULL,`artifacts`.`build`) AS `build_id`,
