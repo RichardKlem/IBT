@@ -708,38 +708,4 @@ BEGIN
 	COMMIT;
 END $$
 
-
-drop procedure if exists refresh_wrapper;
-create definer = rklem@localhost procedure refresh_wrapper(IN proc1 varchar(100))
-BEGIN
-    DECLARE code CHAR(5) DEFAULT '00000';
-    DECLARE msg TEXT;
-    DECLARE continue HANDLER FOR SQLEXCEPTION
-
-    -- following block catches return code and message
-    BEGIN
-        GET DIAGNOSTICS CONDITION 1 code = RETURNED_SQLSTATE, msg = MESSAGE_TEXT;
-    END;
-
-    -- make command
-    SET @command = CONCAT('call ', proc1, '();');
-    PREPARE command_to_exec FROM @command;
-    execute command_to_exec;
-
-    -- if everything was OK, code is 0, set success msg
-    IF code = '00000' THEN
-        SET msg = ('successful refresher run');
-    END IF;
-
-    START TRANSACTION; -- safe write, when error occurs, undo operation is done
-    INSERT INTO `refresh_events_log` (`date_and_time`, `procedure_name`, `mysql_return_code`, `message`)
-    SELECT CAST(NOW() as datetime) as 'date and time',
-           proc1 as 'procedure name',
-           code as 'mysql return code',
-           msg as 'message'
-    order by `date and time` desc;
-    COMMIT; -- push what we have selected
-    DEALLOCATE PREPARE command_to_exec;
-END $$
-
 delimiter ;
