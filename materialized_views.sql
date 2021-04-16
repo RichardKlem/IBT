@@ -1,6 +1,3 @@
-use xklemr00_IBT;
-
-
 create table mv_compiler_regression__berkelium_conf
 (
 	id int unsigned auto_increment
