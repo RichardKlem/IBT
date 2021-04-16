@@ -80,7 +80,7 @@ create definer = rklem@localhost procedure refresh_mv_compiler_regression__berke
 BEGIN
   START TRANSACTION;
   DELETE FROM mv_compiler_regression__berkelium_sum_by_build;
-  INSERT INTO mv_compiler_regression__berkelium_sum_by_build (`date`,`version_and_build_id`,`failed_tests_ia`,`passed_tests_ia`,`sum_tests_ia`,`failed_tests_ca`,`passed_tests_ca`,`sum_tests_ca`)
+  INSERT INTO mv_compiler_regression__berkelium_sum_by_build (`date`,`version_build_id`,`failed_tests_ia`,`passed_tests_ia`,`sum_tests_ia`,`failed_tests_ca`,`passed_tests_ca`,`sum_tests_ca`)
     SELECT
         `artifacts`.`created` AS `date`,
         CONCAT_WS('-',
@@ -399,7 +399,7 @@ create definer = rklem@localhost procedure refresh_mv_compiler_regression__heliu
 BEGIN
 START TRANSACTION;
   DELETE FROM mv_compiler_regression__helium_sum_by_build;
-  INSERT INTO mv_compiler_regression__helium_sum_by_build (`date`,`version_and_build_id`,`failed_tests_ia`,`passed_tests_ia`,`sum_tests_ia`,`failed_tests_ca`,`passed_tests_ca`,`sum_tests_ca`)
+  INSERT INTO mv_compiler_regression__helium_sum_by_build (`date`,`version_build_id`,`failed_tests_ia`,`passed_tests_ia`,`sum_tests_ia`,`failed_tests_ca`,`passed_tests_ca`,`sum_tests_ca`)
     SELECT
         `artifacts`.`created` AS `date`,
         CONCAT_WS('-',
@@ -547,7 +547,7 @@ create definer = rklem@localhost procedure refresh_mv_compiler_regression__urisc
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__urisc_sum_by_build;
-	INSERT INTO mv_compiler_regression__urisc_sum_by_build (`date`,`version_and_build_id`,`failed_tests_ia`,`passed_tests_ia`,`sum_tests_ia`,`failed_tests_ca`,`passed_tests_ca`,`sum_tests_ca`)
+	INSERT INTO mv_compiler_regression__urisc_sum_by_build (`date`,`version_build_id`,`failed_tests_ia`,`passed_tests_ia`,`sum_tests_ia`,`failed_tests_ca`,`passed_tests_ca`,`sum_tests_ca`)
 	 SELECT
 		`artifacts`.`created` AS `date`,
 		CONCAT_WS('-',`artifacts`.`version`,NULL,`artifacts`.`build`) AS `build_id`,
@@ -666,7 +666,7 @@ create definer = rklem@localhost procedure refresh_mv_compiler_regression__uvliw
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__uvliw_sum_by_build;
-	INSERT INTO mv_compiler_regression__uvliw_sum_by_build (`date`,`version_and_build_id`,`failed_tests_ia`,`passed_tests_ia`,`sum_tests_ia`,`failed_tests_ca`,`passed_tests_ca`,`sum_tests_ca`)
+	INSERT INTO mv_compiler_regression__uvliw_sum_by_build (`date`,`version_build_id`,`failed_tests_ia`,`passed_tests_ia`,`sum_tests_ia`,`failed_tests_ca`,`passed_tests_ca`,`sum_tests_ca`)
 		 SELECT
 			`artifacts`.`created` AS `date`,
 			CONCAT_WS('-',`artifacts`.`version`,NULL,`artifacts`.`build`) AS `build_id`,
