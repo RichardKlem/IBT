@@ -37,7 +37,7 @@ create table mv_compiler_regression__berkelium_sum_by_build
 	id int auto_increment
 		primary key,
 	date datetime null,
-	version_and_build_id varchar(100) not null,
+	version_build_id varchar(100) not null,
 	failed_tests_ia int not null,
 	passed_tests_ia int not null,
 	sum_tests_ia int not null,
@@ -136,7 +136,7 @@ create table mv_compiler_regression__helium_sum_by_build
 	id int auto_increment
 		primary key,
 	date datetime null,
-	version_and_build_id varchar(100) not null,
+	version_build_id varchar(100) not null,
 	failed_tests_ia int not null,
 	passed_tests_ia int not null,
 	sum_tests_ia int not null,
@@ -179,7 +179,7 @@ create table mv_compiler_regression__urisc_sum_by_build
 	id int auto_increment
 		primary key,
 	date datetime null,
-	version_and_build_id varchar(100) not null,
+	version_build_id varchar(100) not null,
 	failed_tests_ia int not null,
 	passed_tests_ia int not null,
 	sum_tests_ia int not null,
@@ -221,7 +221,7 @@ create table mv_compiler_regression__uvliw_sum_by_build
 	id int auto_increment
 		primary key,
 	date datetime null,
-	version_and_build_id varchar(100) not null,
+	version_build_id varchar(100) not null,
 	failed_tests_ia int not null,
 	passed_tests_ia int not null,
 	sum_tests_ia int not null,
