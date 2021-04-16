@@ -1,6 +1,3 @@
-set @db_name = 'xklemr00_IBT';
-
-
 set @stmt = concat('create database ', @db_name);
 prepare stmt from @stmt;
 execute stmt;
