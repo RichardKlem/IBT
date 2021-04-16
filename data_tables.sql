@@ -1,6 +1,3 @@
-use xklemr00_IBT;
-
-
 create table artifacts
 (
 	id bigint auto_increment
