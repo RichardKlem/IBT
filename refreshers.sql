@@ -179,13 +179,13 @@ BEGIN
 		    and (`tests`.`tool` = 'compiler')
 		    and (`tests`.`kind` = 'regression'))
 		group by
-		    `date` desc,
+		    `artifacts`.`created`,
 		    `artifacts`.`version`,
 		    `artifacts`.`build`,
 		    `sources`.`branch`,
 		    `tests`.`design_path`
 		order by
-		    `date` desc,
+		    `artifacts`.`created` desc,
 		    `failed_tests` desc,
 		    `passed_tests` desc;
 COMMIT;
@@ -705,6 +705,50 @@ BEGIN
 			(`tests`.`kind` = 'regression') AND
 			(`artifacts_ip`.`name` LIKE '%codasip_uvliw%')
 		GROUP BY `artifacts`.`created`, `build_id`;
+	COMMIT;
+END $$
+
+create
+    definer = rklem@localhost procedure refresh_mv_tests_debugger_regression__urisc_all()
+BEGIN
+	START TRANSACTION;
+	DELETE FROM mv_debugger_regression__urisc_all;
+	INSERT INTO mv_debugger_regression__urisc_all (`passed`, `parameters`,`design_path`,`name`,`version`,`build_id`, `command`,`OS`,`compiler`,`branch`,`date`, `test_status`,`link_full`)
+	SELECT
+		`tests`.`passed` AS `passed`,
+		`tests`.`parameters` AS `parameters`,
+		`tests`.`design_path` AS `design_path`,
+		`tests`.`name` AS `name`,
+		`artifacts`.`version` AS `version`,
+		`artifacts`.`build` AS `build_id`,
+		`artifacts_session`.`command` AS `command`,
+		`cl_environments`.`os` AS `OS`,
+		`cl_environments`.`compiler` AS `compiler`,
+		`sources`.`branch` AS `branch`,
+		`artifacts`.`created` AS `date`,
+        `cl_status`.`description` AS `test_status`,
+		IF((`tests`.`link` <> 'NULL'),
+			CONCAT('https://codasip3.codasip.com/~jenkinsdata/',
+					REPLACE(`tests`.`link`,
+						'mastermind_data/',
+						'')),
+			`tests`.`link`) AS `link_full`
+	FROM
+		(((((((`tests`
+		INNER JOIN `artifacts` ON ((`tests`.`studio_id` = `artifacts`.`id`)))
+		INNER JOIN `sources` ON ((`tests`.`ip_id` = `sources`.`artifact_id`)))
+		INNER JOIN `artifacts_session` ON ((`tests`.`session_id` = `artifacts_session`.`id`)))
+		INNER JOIN `artifacts_studio` ON ((`tests`.`studio_id` = `artifacts_studio`.`id`)))
+		INNER JOIN `cl_environments` ON ((`artifacts_studio`.`environment_id` = `cl_environments`.`id`)))
+		INNER JOIN `artifacts_ip` ON ((`tests`.`ip_id` = `artifacts_ip`.`id`)))
+        INNER JOIN `cl_status` ON  ((`tests`.`status_id` = `cl_status`.`id`)))
+	WHERE
+		(`artifacts_ip`.`name` LIKE 'codasip_urisc') AND
+	    (`artifacts_ip`.`configuration` is null) AND
+		(`tests`.`tool` = 'debugger') AND
+		(`tests`.`kind` = 'regression') AND
+	    (`cl_status`.`description` is not null)
+	ORDER BY `artifacts`.`created` DESC;
 	COMMIT;
 END $$
 

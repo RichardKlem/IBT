@@ -227,6 +227,26 @@ create table mv_compiler_regression__uvliw_sum_by_build
 	sum_tests_ca int not null
 );
 
+-- auto-generated definition
+create table mv_debugger_regression__urisc_all
+(
+    passed      tinyint(1)    null,
+    id          int(11) unsigned auto_increment
+        primary key,
+    date        datetime      null,
+    version     varchar(128)  null,
+    build_id    varchar(128)  null,
+    os          varchar(128)  null,
+    compiler    varchar(128)  null,
+    branch      varchar(128)  null,
+    parameters  varchar(255)  null,
+    link_full   text          null,
+    test_status varchar(64)   null,
+    design_path varchar(50)   null,
+    name        varchar(100)  null,
+    command     varchar(1000) null
+);
+
 
 create table refresh_events_log
 (
