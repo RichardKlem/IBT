@@ -124,6 +124,5 @@ create table tests
     index ix_tests_parameters (parameters),
     index ix_tests_tool (tool),
     index ix_tests_type (type),
-    index ix_tests_tool_kind (tool, kind),
+    index ix_tests_tool_kind (tool, kind)
 );
-
