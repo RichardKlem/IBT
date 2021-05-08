@@ -86,47 +86,7 @@ create table sources
     repository  varchar(100) null,
     commit      varchar(40)  null,
     branch      varchar(100) null,
-    artifact_id bigint       null,
-    constraint sources_ibfk_1
-        foreign key (artifact_id) references artifacts (id)
-            on delete cascade,
     index ix_sources_branch (branch)
-);
-
-
-create table tests
-(
-    id          bigint auto_increment primary key,
-    name        varchar(100)  null,
-    tool        varchar(30)   null,
-    kind        varchar(30)   null,
-    passed      tinyint(1)    null,
-    parameters  varchar(250)  null,
-    design_path varchar(50)   null,
-    link        varchar(1000) null,
-    type        varchar(10)   null,
-    ip_id       bigint        null,
-    studio_id   bigint        null,
-    session_id  bigint        null,
-    status_id   int           null,
-    date        date          null,
-    constraint tests_ibfk_1
-        foreign key (ip_id) references artifacts (id),
-    constraint tests_ibfk_2
-        foreign key (studio_id) references artifacts (id),
-    constraint tests_ibfk_3
-        foreign key (session_id) references artifacts (id),
-    constraint tests_ibfk_4
-        foreign key (status_id) references cl_status (id),
-
-    index ix_tests_design_path (design_path),
-    index ix_tests_kind (kind),
-    index ix_tests_name (name),
-    index ix_tests_parameters (parameters),
-    index ix_tests_tool (tool),
-    index ix_tests_type (type),
-    index ix_tests_tool_kind (tool, kind),
-    index ix_tests_date (date)
 );
 
 create table tests_compiler
@@ -198,3 +158,15 @@ create table tests_rest
     index ix_tests_tool_kind (tool, kind),
     index ix_tests_date (date)
 );
+
+CREATE TABLE artifact_source(
+    artifact_id     BIGINT UNSIGNED NOT NULL,
+    source_id BIGINT UNSIGNED NOT NULL,
+
+    PRIMARY KEY(artifact_id, source_id),
+    INDEX      (source_id, artifact_id),
+    constraint artifact_source_ibfk_1
+        foreign key (artifact_id) references artifacts (id),
+    constraint artifact_source_ibfk_2
+        foreign key (source_id) references sources (id)
+) ENGINE=InnoDB;
