@@ -751,5 +751,44 @@ BEGIN
 	ORDER BY `artifacts`.`created` DESC;
 	COMMIT;
 END $$
+# REFRESH WRAPPER PROCEDURE:
+# Wrapper PROCEDURE to gather and log information about every MV refresher call.
+DROP PROCEDURE IF EXISTS refresh_wrapper;
+CREATE
+    DEFINER = test_user@localhost PROCEDURE refresh_wrapper(IN proc1 VARCHAR(100))
+BEGIN
+    DECLARE code CHAR(5) DEFAULT '00000';
+    DECLARE msg TEXT;
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
+
+        -- Following block catches return code and message.
+        BEGIN
+            GET DIAGNOSTICS CONDITION 1 code = RETURNED_SQLSTATE, msg = MESSAGE_TEXT;
+        END;
+
+    -- Create command.
+    SET @command = CONCAT('call ', proc1, '();');
+    PREPARE command_to_exec FROM @command;
+
+    SET @start_time = now();
+    execute command_to_exec;
+    SET @duration = timediff(now(), @start_time);
+
+    -- IF everything was OK, code is 0, set success msg
+    IF code = '00000' THEN
+        SET msg = ('successful refresher run');
+    END IF;
+
+    START TRANSACTION;
+    INSERT INTO refresh_events_log (date_and_time, procedure_name, mysql_return_code, message, duration)
+    SELECT CAST(NOW() AS datetime) AS 'date and time',
+           proc1                   AS 'PROCEDURE name',
+           code                    AS 'mysql return code',
+           msg                     AS 'message',
+           @duration               AS 'duration'
+    ORDER BY 'date and time' DESC;
+    COMMIT; -- Push what we have selected.
+    DEALLOCATE PREPARE command_to_exec;
+END $$
 
 DELIMITER ;
