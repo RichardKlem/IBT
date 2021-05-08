@@ -792,13 +792,13 @@ END $$
 
 # REFRESH WRAPPER PROCEDURE:
 # Wrapper PROCEDURE to gather and log information about every MV refresher call.
-DROP PROCEDURE IF exists refresh_wrapper;
+DROP PROCEDURE IF EXISTS refresh_wrapper;
 CREATE
-    DEFINER = test_user@localhost PROCEDURE refresh_wrapper(IN proc1 varchar(100))
+    DEFINER = test_user@localhost PROCEDURE refresh_wrapper(IN proc1 VARCHAR(100))
 BEGIN
     DECLARE code CHAR(5) DEFAULT '00000';
     DECLARE msg TEXT;
-    DECLARE continue HANDLER FOR SQLEXCEPTION
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION
 
         -- Following block catches return code and message.
         BEGIN
@@ -819,7 +819,7 @@ BEGIN
     END IF;
 
     START TRANSACTION;
-    INSERT INTO refresh_events_log (date_and_time, PROCEDURE_name, mysql_return_code, message, duration)
+    INSERT INTO refresh_events_log (date_and_time, procedure_name, mysql_return_code, message, duration)
     SELECT CAST(NOW() AS datetime) AS 'date and time',
            proc1                   AS 'PROCEDURE name',
            code                    AS 'mysql return code',
