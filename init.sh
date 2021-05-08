@@ -2,22 +2,42 @@
 
 
 # Change DB name according to your preferences.
-DB_NAME="thousand_xklemr00_IBT"
-# ----------------------------------------------------------------------------------------------------------------------
-mysql -e"set @db_name = '$DB_NAME'; \. init.sql"
-mysql -D $DB_NAME < data_tables.sql
-mysql -D $DB_NAME < refreshers.sql
-mysql -D $DB_NAME < refreshers_new.sql
-mysql -D $DB_NAME < materialized_views.sql
-# Import sample data
-mysql -D $DB_NAME < cl_environments.sql
-mysql -D $DB_NAME < cl_status.sql
-mysql -D $DB_NAME < artifacts.sql
-mysql -D $DB_NAME < sources.sql
-mysql -D $DB_NAME < artifacts_ip.sql
-mysql -D $DB_NAME < artifacts_session.sql
-mysql -D $DB_NAME < artifacts_studio.sql
-# ----------------------------------------------------------------------------------------------------------------------
+DB_NAME="dep_test"
+DB_NAME_OLD="${DB_NAME}_old"
+DB_NAME_NEW="${DB_NAME}_new"
 
-# Choose one: tests_IDmod_100.sql is about 1 million rows, tests_IDmod_1000.sql is about 100k rows.
-mysql -D $DB_NAME < tests_IDmod_1000.sql
+# ----------------------------------------------------------------------------------------------------------------------
+# Creates old and new DB schema, grant privileges.
+mysql -e"set @db_name = '$DB_NAME'; \. init.sql"
+# Create OLD schema tables and procedures
+mysql -D $DB_NAME_OLD < data_tables.sql
+mysql -D $DB_NAME_OLD < materialized_views.sql
+mysql -D $DB_NAME_OLD < refreshers.sql
+# Import sample data into OLD schema
+mysql -D $DB_NAME_OLD < cl_environments.sql
+mysql -D $DB_NAME_OLD < cl_status.sql
+mysql -D $DB_NAME_OLD < artifacts.sql
+mysql -D $DB_NAME_OLD < sources.sql
+mysql -D $DB_NAME_OLD < artifacts_ip.sql
+mysql -D $DB_NAME_OLD < artifacts_session.sql
+mysql -D $DB_NAME_OLD < artifacts_studio.sql
+# Create NEW schema tables and procedures
+mysql -D $DB_NAME_NEW < data_tables_new.sql
+mysql -D $DB_NAME_NEW < materialized_views.sql
+mysql -D $DB_NAME_NEW < refreshers_new.sql
+
+mysql -D $DB_NAME_NEW < cl_environments.sql
+mysql -D $DB_NAME_NEW < cl_status.sql
+mysql -D $DB_NAME_NEW < artifacts.sql
+mysql -D $DB_NAME_NEW < artifacts_ip.sql
+mysql -D $DB_NAME_NEW < artifacts_session.sql
+mysql -D $DB_NAME_NEW < artifacts_studio.sql
+
+# -------------------------------------------------------------------------------------------
+# Choose one:
+#   tests_IDmod_100.sql is about 1 million rows,
+#   tests_IDmod_1000.sql is about 100k rows.
+# Or you can choose full referential data load which has around 30 millions
+# rows. This data load is split into smaller files. You can choose how many data you want.
+# Note: Full data load took me on my machine about one day to complete.
+mysql -D $DB_NAME_OLD < tests_IDmod_1000.sql
