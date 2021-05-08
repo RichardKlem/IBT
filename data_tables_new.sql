@@ -1,172 +1,171 @@
-create table artifacts
+CREATE TABLE artifacts
 (
-    id      bigint auto_increment primary key,
-    version varchar(10) null,
-    build   varchar(45) null,
-    created datetime    null,
-    type    varchar(10) null,
-    index ix_artifacts_build (build),
-    index ix_artifacts_created (created),
-    index ix_artifacts_type (type),
-    index ix_artifacts_version (version)
+    id      BIGINT AUTO_INCREMENT PRIMARY KEY,
+    version VARCHAR(10) NULL,
+    build   VARCHAR(45) NULL,
+    CREATEd DATETIME    NULL,
+    type    VARCHAR(10) NULL,
+    INDEX ix_artifacts_build (build),
+    INDEX ix_artifacts_CREATEd (CREATEd),
+    INDEX ix_artifacts_type (type),
+    INDEX ix_artifacts_version (version)
 );
 
 
-create table artifacts_ip
+CREATE TABLE artifacts_ip
 (
-    id            bigint      not null primary key,
-    name          varchar(50) null,
-    configuration varchar(50) null,
-    constraint artifacts_ip_ibfk_1
-        foreign key (id) references artifacts (id)
-            on delete cascade,
-    index ix_artifacts_ip_configuration (configuration),
-    index ix_artifacts_ip_name (name)
+    id            BIGINT      NOT NULL PRIMARY KEY,
+    name          VARCHAR(50) NULL,
+    configuration VARCHAR(50) NULL,
+    CONSTRAINT artifacts_ip_ibfk_1
+        FOREIGN KEY (id) REFERENCES artifacts (id)
+            ON DELETE CASCADE,
+    INDEX ix_artifacts_ip_configuration (configuration),
+    INDEX ix_artifacts_ip_name (name)
 );
 
 
-create table cl_environments
+CREATE TABLE cl_environments
 (
-    id        varchar(10) not null primary key,
-    os        varchar(20) null,
-    arch      varchar(20) null,
-    compiler  varchar(20) null,
-    supported tinyint(1)  null
+    id        VARCHAR(10) NOT NULL PRIMARY KEY,
+    os        VARCHAR(20) NULL,
+    arch      VARCHAR(20) NULL,
+    compiler  VARCHAR(20) NULL,
+    supported TINYINT(1)  NULL
 );
 
-create table cl_status
+CREATE TABLE cl_status
 (
-    id          int auto_increment primary key,
-    code        varchar(100) null,
-    description varchar(500) null
+    id          INT AUTO_INCREMENT PRIMARY KEY,
+    code        VARCHAR(100) NULL,
+    description VARCHAR(500) NULL
 );
 
-create table artifacts_session
+CREATE TABLE artifacts_session
 (
-    id             bigint        not null primary key,
-    command        varchar(1000) null,
-    duration       int           null,
-    node_name      varchar(100)  null,
-    job_url        varchar(256)  null,
-    passed         tinyint(1)    null,
-    environment_id varchar(10)   null,
-    status_id      int           null,
-    constraint artifacts_session_ibfk_1
-        foreign key (id) references artifacts (id)
-            on delete cascade,
-    constraint artifacts_session_ibfk_2
-        foreign key (environment_id) references cl_environments (id),
-    constraint artifacts_session_ibfk_3
-        foreign key (status_id) references cl_status (id)
-);
-
-
-create table artifacts_studio
-(
-    id             bigint      not null primary key,
-    build_number   int         null,
-    build_type     varchar(20) null,
-    status_id      int         null,
-    environment_id varchar(10) null,
-    constraint artifacts_studio_ibfk_1
-        foreign key (id) references artifacts (id)
-            on delete cascade,
-    constraint artifacts_studio_ibfk_2
-        foreign key (status_id) references cl_status (id),
-    constraint artifacts_studio_ibfk_3
-        foreign key (environment_id) references cl_environments (id),
-    index ix_artifacts_studio_build_number (build_number),
-    index ix_artifacts_studio_build_type (build_type)
+    id             BIGINT        NOT NULL PRIMARY KEY,
+    command        VARCHAR(1000) NULL,
+    duration       INT           NULL,
+    node_name      VARCHAR(100)  NULL,
+    job_url        VARCHAR(256)  NULL,
+    passed         TINYINT(1)    NULL,
+    environment_id VARCHAR(10)   NULL,
+    status_id      INT           NULL,
+    CONSTRAINT artifacts_session_ibfk_1
+        FOREIGN KEY (id) REFERENCES artifacts (id)
+            ON DELETE CASCADE,
+    CONSTRAINT artifacts_session_ibfk_2
+        FOREIGN KEY (environment_id) REFERENCES cl_environments (id),
+    CONSTRAINT artifacts_session_ibfk_3
+        FOREIGN KEY (status_id) REFERENCES cl_status (id)
 );
 
 
-create table sources
+CREATE TABLE artifacts_studio
 (
-    id          bigint auto_increment primary key,
-    repository  varchar(100) null,
-    commit      varchar(40)  null,
-    branch      varchar(100) null,
-    index ix_sources_branch (branch)
+    id             BIGINT      NOT NULL PRIMARY KEY,
+    build_number   INT         NULL,
+    build_type     VARCHAR(20) NULL,
+    status_id      INT         NULL,
+    environment_id VARCHAR(10) NULL,
+    CONSTRAINT artifacts_studio_ibfk_1
+        FOREIGN KEY (id) REFERENCES artifacts (id)
+            ON DELETE CASCADE,
+    CONSTRAINT artifacts_studio_ibfk_2
+        FOREIGN KEY (status_id) REFERENCES cl_status (id),
+    CONSTRAINT artifacts_studio_ibfk_3
+        FOREIGN KEY (environment_id) REFERENCES cl_environments (id),
+    INDEX ix_artifacts_studio_build_number (build_number),
+    INDEX ix_artifacts_studio_build_type (build_type)
 );
 
-create table tests_compiler
-(
-    id          bigint auto_increment primary key,
-    name        varchar(100)  null,
-    tool        varchar(30)   null,
-    kind        varchar(30)   null,
-    passed      tinyint(1)    null,
-    parameters  varchar(250)  null,
-    design_path varchar(50)   null,
-    link        varchar(1000) null,
-    type        varchar(10)   null,
-    ip_id       bigint        null,
-    studio_id   bigint        null,
-    session_id  bigint        null,
-    status_id   int           null,
-    date        date          null,
-    constraint tests_ibfk_1
-        foreign key (ip_id) references artifacts (id),
-    constraint tests_ibfk_2
-        foreign key (studio_id) references artifacts (id),
-    constraint tests_ibfk_3
-        foreign key (session_id) references artifacts (id),
-    constraint tests_ibfk_4
-        foreign key (status_id) references cl_status (id),
 
-    index ix_tests_design_path (design_path),
-    index ix_tests_kind (kind),
-    index ix_tests_name (name),
-    index ix_tests_parameters (parameters),
-    index ix_tests_tool (tool),
-    index ix_tests_type (type),
-    index ix_tests_tool_kind (tool, kind),
-    index ix_tests_date (date)
+CREATE TABLE sources
+(
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    repository  VARCHAR(100) NULL,
+    commit      VARCHAR(40)  NULL,
+    branch      VARCHAR(100) NULL,
+    INDEX ix_sources_branch (branch)
 );
 
-create table tests_rest
+CREATE TABLE tests_compiler
 (
-    id          bigint auto_increment primary key,
-    name        varchar(100)  null,
-    tool        varchar(30)   null,
-    kind        varchar(30)   null,
-    passed      tinyint(1)    null,
-    parameters  varchar(250)  null,
-    design_path varchar(50)   null,
-    link        varchar(1000) null,
-    type        varchar(10)   null,
-    ip_id       bigint        null,
-    studio_id   bigint        null,
-    session_id  bigint        null,
-    status_id   int           null,
-    date        date          null,
-    constraint tests_rest_ibfk_1
-        foreign key (ip_id) references artifacts_ip (id),
-    constraint tests_rest_ibfk_2
-        foreign key (studio_id) references artifacts_studio (id),
-    constraint tests_rest_ibfk_3
-        foreign key (session_id) references artifacts_session (id),
-    constraint tests_rest_ibfk_4
-        foreign key (status_id) references cl_status (id),
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name        VARCHAR(100)  NULL,
+    tool        VARCHAR(30)   NULL,
+    kind        VARCHAR(30)   NULL,
+    passed      TINYINT(1)    NULL,
+    parameters  VARCHAR(250)  NULL,
+    design_path VARCHAR(50)   NULL,
+    link        VARCHAR(1000) NULL,
+    type        VARCHAR(10)   NULL,
+    ip_id       BIGINT        NULL,
+    studio_id   BIGINT        NULL,
+    session_id  BIGINT        NULL,
+    status_id   INT           NULL,
+    date        DATE          NULL,
+    CONSTRAINT tests_ibfk_1
+        FOREIGN KEY (ip_id) REFERENCES artifacts (id),
+    CONSTRAINT tests_ibfk_2
+        FOREIGN KEY (studio_id) REFERENCES artifacts (id),
+    CONSTRAINT tests_ibfk_3
+        FOREIGN KEY (session_id) REFERENCES artifacts (id),
+    CONSTRAINT tests_ibfk_4
+        FOREIGN KEY (status_id) REFERENCES cl_status (id),
 
-    index ix_tests_design_path (design_path),
-    index ix_tests_kind (kind),
-    index ix_tests_name (name),
-    index ix_tests_parameters (parameters),
-    index ix_tests_tool (tool),
-    index ix_tests_type (type),
-    index ix_tests_tool_kind (tool, kind),
-    index ix_tests_date (date)
+    INDEX ix_tests_design_path (design_path),
+    INDEX ix_tests_kind (kind),
+    INDEX ix_tests_name (name),
+    INDEX ix_tests_parameters (parameters),
+    INDEX ix_tests_tool (tool),
+    INDEX ix_tests_type (type),
+    INDEX ix_tests_tool_kind (tool, kind),
+    INDEX ix_tests_date (date)
+);
+
+CREATE TABLE tests_rest
+(
+    id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name        VARCHAR(100)  NULL,
+    tool        VARCHAR(30)   NULL,
+    kind        VARCHAR(30)   NULL,
+    passed      TINYINT(1)    NULL,
+    parameters  VARCHAR(250)  NULL,
+    design_path VARCHAR(50)   NULL,
+    link        VARCHAR(1000) NULL,
+    type        VARCHAR(10)   NULL,
+    ip_id       BIGINT        NULL,
+    studio_id   BIGINT        NULL,
+    session_id  BIGINT        NULL,
+    status_id   INT           NULL,
+    date        date          NULL,
+    CONSTRAINT tests_rest_ibfk_1
+        FOREIGN KEY (ip_id) REFERENCES artifacts_ip (id),
+    CONSTRAINT tests_rest_ibfk_2
+        FOREIGN KEY (studio_id) REFERENCES artifacts_studio (id),
+    CONSTRAINT tests_rest_ibfk_3
+        FOREIGN KEY (session_id) REFERENCES artifacts_session (id),
+    CONSTRAINT tests_rest_ibfk_4
+        FOREIGN KEY (status_id) REFERENCES cl_status (id),
+
+    INDEX ix_tests_design_path (design_path),
+    INDEX ix_tests_kind (kind),
+    INDEX ix_tests_name (name),
+    INDEX ix_tests_parameters (parameters),
+    INDEX ix_tests_tool (tool),
+    INDEX ix_tests_type (type),
+    INDEX ix_tests_tool_kind (tool, kind),
+    INDEX ix_tests_date (date)
 );
 
 CREATE TABLE artifact_source(
-    artifact_id     BIGINT UNSIGNED NOT NULL,
-    source_id BIGINT UNSIGNED NOT NULL,
-
+    artifact_id     BIGINT,
+    source_id BIGINT,
+    CONSTRAINT artifact_source_ibfk_1
+        FOREIGN KEY (artifact_id) REFERENCES artifacts (id),
+    CONSTRAINT artifact_source_ibfk_2
+        FOREIGN KEY (source_id) REFERENCES sources (id),
     PRIMARY KEY(artifact_id, source_id),
-    INDEX      (source_id, artifact_id),
-    constraint artifact_source_ibfk_1
-        foreign key (artifact_id) references artifacts (id),
-    constraint artifact_source_ibfk_2
-        foreign key (source_id) references sources (id)
-) ENGINE=InnoDB;
+    INDEX      (source_id, artifact_id)
+);
