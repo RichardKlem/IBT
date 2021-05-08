@@ -227,7 +227,6 @@ create table mv_compiler_regression__uvliw_sum_by_build
 	sum_tests_ca int not null
 );
 
--- auto-generated definition
 create table mv_debugger_regression__urisc_all
 (
     passed      tinyint(1)    null,
