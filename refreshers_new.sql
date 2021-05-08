@@ -1,6 +1,6 @@
 DELIMITER $$
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__berkelium_by_conf()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__berkelium_by_conf()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -46,7 +46,7 @@ END $$
 
 
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__berkelium_links()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__berkelium_links()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -90,7 +90,7 @@ END $$
 
 
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__berkelium_sum_by_build()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__berkelium_sum_by_build()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -152,7 +152,7 @@ END $$
 
 
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__codix_by_ip()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__codix_by_ip()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -191,7 +191,7 @@ BEGIN
 END $$
 
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__codix_links()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__codix_links()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -233,7 +233,7 @@ END $$
 
 
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__custom_by_ip()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__custom_by_ip()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -272,7 +272,7 @@ BEGIN
 END $$
 
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__custom_links()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__custom_links()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -314,7 +314,7 @@ END $$
 
 
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__helium_by_conf()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__helium_by_conf()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -355,7 +355,7 @@ END $$
 
 
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__helium_links()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__helium_links()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -398,7 +398,7 @@ END $$
 
 
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__helium_sum_by_build()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__helium_sum_by_build()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -460,7 +460,7 @@ END $$
 
 
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__urisc_by_branch()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__urisc_by_branch()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -501,7 +501,7 @@ END $$
 
 
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__urisc_links()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__urisc_links()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -545,7 +545,7 @@ END $$
 
 
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__urisc_sum_by_build()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__urisc_sum_by_build()
 BEGIN
     START TRANSACTION;
     -- Get the day of the latest records.
@@ -601,7 +601,7 @@ END $$
 
 
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__uvliw_by_branch()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__uvliw_by_branch()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -641,7 +641,7 @@ END $$
 
 
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__uvliw_links()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__uvliw_links()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -685,7 +685,7 @@ END $$
 
 
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__uvliw_sum_by_build()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__uvliw_sum_by_build()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -743,7 +743,7 @@ END $$
 
 
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_new_mv_debugger_regression__urisc_all()
+    DEFINER = test_user@localhost PROCEDURE refresh_new_mv_debugger_regression__urisc_all()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -794,7 +794,7 @@ END $$
 # Wrapper PROCEDURE to gather and log information about every MV refresher call.
 DROP PROCEDURE IF exists refresh_wrapper;
 CREATE
-    definer = test_user@localhost PROCEDURE refresh_wrapper(IN proc1 varchar(100))
+    DEFINER = test_user@localhost PROCEDURE refresh_wrapper(IN proc1 varchar(100))
 BEGIN
     DECLARE code CHAR(5) DEFAULT '00000';
     DECLARE msg TEXT;

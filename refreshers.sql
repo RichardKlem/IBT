@@ -1,5 +1,5 @@
-delimiter $$
-create definer = test_user@localhost procedure refresh_mv_compiler_regression__berkelium_by_conf()
+DELIMITER $$
+CREATE DEFINER = test_user@localhost PROCEDURE refresh_mv_compiler_regression__berkelium_by_conf()
 BEGIN
 START TRANSACTION;
   DELETE FROM mv_compiler_regression__berkelium_conf;
@@ -34,7 +34,7 @@ COMMIT;
 END $$
 
 
-create definer = test_user@localhost procedure refresh_mv_compiler_regression__berkelium_links()
+CREATE DEFINER = test_user@localhost PROCEDURE refresh_mv_compiler_regression__berkelium_links()
 BEGIN
 START TRANSACTION;
 DELETE FROM mv_compiler_regression__berkelium_links;
@@ -76,7 +76,7 @@ DELETE FROM mv_compiler_regression__berkelium_links;
 END $$
 
 
-create definer = test_user@localhost procedure refresh_mv_compiler_regression__berkelium_sum_by_build()
+CREATE DEFINER = test_user@localhost PROCEDURE refresh_mv_compiler_regression__berkelium_sum_by_build()
 BEGIN
   START TRANSACTION;
   DELETE FROM mv_compiler_regression__berkelium_sum_by_build;
@@ -151,7 +151,7 @@ BEGIN
 END $$
 
 
-create definer = test_user@localhost procedure refresh_mv_compiler_regression__codix_by_ip()
+CREATE DEFINER = test_user@localhost PROCEDURE refresh_mv_compiler_regression__codix_by_ip()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__codix_by_ip;
@@ -166,32 +166,32 @@ BEGIN
 		    sum((case when (`tests`.`passed` = 1) then 1 else 0 end)) AS `passed_tests`
 		from
 		    (((`tests`
-		join `sources` on
+		JOIN `sources` on
 		    ((`tests`.`ip_id` = `sources`.`artifact_id`)))
-		join `artifacts` on
+		JOIN `artifacts` on
 		    ((`tests`.`studio_id` = `artifacts`.`id`)))
-		join `artifacts_ip` on
+		JOIN `artifacts_ip` on
 		    ((`tests`.`ip_id` = `artifacts_ip`.`id`)))
 		where
 		    ((`artifacts_ip`.`name` like '%codix%')
-		    and (not((`artifacts_ip`.`name` like '%helium%')))
-		    and (not((`artifacts_ip`.`name` like '%berkelium%')))
-		    and (`tests`.`tool` = 'compiler')
-		    and (`tests`.`kind` = 'regression'))
-		group by
+		    AND (NOT((`artifacts_ip`.`name` like '%helium%')))
+		    AND (NOT((`artifacts_ip`.`name` like '%berkelium%')))
+		    AND (`tests`.`tool` = 'compiler')
+		    AND (`tests`.`kind` = 'regression'))
+		GROUP BY
 		    `artifacts`.`created`,
 		    `artifacts`.`version`,
 		    `artifacts`.`build`,
 		    `sources`.`branch`,
 		    `tests`.`design_path`
-		order by
+		ORDER BY
 		    `artifacts`.`created` desc,
 		    `failed_tests` desc,
 		    `passed_tests` desc;
 COMMIT;
 END $$
 
-create definer = test_user@localhost procedure refresh_mv_compiler_regression__codix_links()
+CREATE DEFINER = test_user@localhost PROCEDURE refresh_mv_compiler_regression__codix_links()
 BEGIN
 START TRANSACTION;
 DELETE FROM mv_compiler_regression__codix_links;
@@ -210,34 +210,34 @@ DELETE FROM mv_compiler_regression__codix_links;
     `tests`.`link`) AS `link_full`
 	from
 	    ((((((`tests`
-	left join `artifacts` on
+	left JOIN `artifacts` on
 	    ((`tests`.`studio_id` = `artifacts`.`id`)))
-	left join `sources` on
+	left JOIN `sources` on
 	    ((`tests`.`ip_id` = `sources`.`artifact_id`)))
-	left join `artifacts_studio` on
+	left JOIN `artifacts_studio` on
 	    ((`tests`.`studio_id` = `artifacts_studio`.`id`)))
-	left join `cl_environments` on
+	left JOIN `cl_environments` on
 	    ((`artifacts_studio`.`environment_id` = `cl_environments`.`id`)))
-	left join `artifacts_ip` on
+	left JOIN `artifacts_ip` on
 	    ((`tests`.`ip_id` = `artifacts_ip`.`id`)))
-	left join `cl_status` on
+	left JOIN `cl_status` on
 	    ((`tests`.`status_id` = `cl_status`.`id`)))
 	where
 	    ((`tests`.`passed` = 0)
-	    and (`tests`.`link` is not null)
-	    and (`tests`.`studio_id` is not null)
-	    and (`tests`.`tool` = 'compiler')
-	    and (`tests`.`kind` = 'regression')
-	    and (`artifacts_ip`.`name` like '%codix%')
-	    and (not((`artifacts_ip`.`name` like '%helium%')))
-	    and (not((`artifacts_ip`.`name` like '%berkelium%'))))
-	order by
+	    AND (`tests`.`link` IS NOT NULL)
+	    AND (`tests`.`studio_id` IS NOT NULL)
+	    AND (`tests`.`tool` = 'compiler')
+	    AND (`tests`.`kind` = 'regression')
+	    AND (`artifacts_ip`.`name` like '%codix%')
+	    AND (NOT((`artifacts_ip`.`name` like '%helium%')))
+	    AND (NOT((`artifacts_ip`.`name` like '%berkelium%'))))
+	ORDER BY
 	    `artifacts`.`created` desc;
     COMMIT;
 END $$
 
 
-create definer = test_user@localhost procedure refresh_mv_compiler_regression__custom_by_ip()
+CREATE DEFINER = test_user@localhost PROCEDURE refresh_mv_compiler_regression__custom_by_ip()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__custom_by_ip;
@@ -252,30 +252,30 @@ BEGIN
 	    sum((case when (`tests`.`passed` = 1) then 1 else 0 end)) AS `passed_tests`
 		from
 		    (((`tests`
-		join `sources` on
+		JOIN `sources` on
 		    ((`tests`.`ip_id` = `sources`.`artifact_id`)))
-		join `artifacts` on
+		JOIN `artifacts` on
 		    ((`tests`.`studio_id` = `artifacts`.`id`)))
-		join `artifacts_ip` on
+		JOIN `artifacts_ip` on
 		    ((`tests`.`ip_id` = `artifacts_ip`.`id`)))
 		where
 		    ((`artifacts_ip`.`name` like '%sigma%')
-		    and (`tests`.`tool` = 'compiler')
-		    and (`tests`.`kind` = 'regression'))
-		group by
+		    AND (`tests`.`tool` = 'compiler')
+		    AND (`tests`.`kind` = 'regression'))
+		GROUP BY
 		    `artifacts`.`created` desc,
 		    `artifacts`.`version`,
 		    `artifacts`.`build`,
 		    `sources`.`branch`,
 		    `tests`.`design_path`
-		order by
+		ORDER BY
 		    `artifacts`.`created` desc,
 		    `failed_tests` desc,
 		    `passed_tests` desc;
 COMMIT;
 END $$
 
-create definer = test_user@localhost procedure refresh_mv_compiler_regression__custom_links()
+CREATE DEFINER = test_user@localhost PROCEDURE refresh_mv_compiler_regression__custom_links()
 BEGIN
 START TRANSACTION;
 DELETE FROM mv_compiler_regression__custom_links;
@@ -295,32 +295,32 @@ DELETE FROM mv_compiler_regression__custom_links;
     `tests`.`link`) AS `link_full`
 	from
 	    ((((((`tests`
-		left join `artifacts` on
+		left JOIN `artifacts` on
 		    ((`tests`.`studio_id` = `artifacts`.`id`)))
-		left join `sources` on
+		left JOIN `sources` on
 		    ((`tests`.`ip_id` = `sources`.`artifact_id`)))
-		left join `artifacts_studio` on
+		left JOIN `artifacts_studio` on
 		    ((`tests`.`studio_id` = `artifacts_studio`.`id`)))
-		left join `cl_environments` on
+		left JOIN `cl_environments` on
 		    ((`artifacts_studio`.`environment_id` = `cl_environments`.`id`)))
-		left join `artifacts_ip` on
+		left JOIN `artifacts_ip` on
 		    ((`tests`.`ip_id` = `artifacts_ip`.`id`)))
-		left join `cl_status` on
+		left JOIN `cl_status` on
 		    ((`tests`.`status_id` = `cl_status`.`id`)))
 	where
 	    ((`tests`.`passed` = 0)
-	    and (`tests`.`link` is not null)
-	    and (`tests`.`studio_id` is not null)
-	    and (`tests`.`tool` = 'compiler')
-	    and (`tests`.`kind` = 'regression')
-	    and (`artifacts_ip`.`name` like '%sigma%'))
-	order by
+	    AND (`tests`.`link` IS NOT NULL)
+	    AND (`tests`.`studio_id` IS NOT NULL)
+	    AND (`tests`.`tool` = 'compiler')
+	    AND (`tests`.`kind` = 'regression')
+	    AND (`artifacts_ip`.`name` like '%sigma%'))
+	ORDER BY
 	    `artifacts`.`created` desc;
     COMMIT;
 END $$
 
 
-create definer = test_user@localhost procedure refresh_mv_compiler_regression__helium_by_conf()
+CREATE DEFINER = test_user@localhost PROCEDURE refresh_mv_compiler_regression__helium_by_conf()
 BEGIN
   START TRANSACTION;
   DELETE FROM mv_compiler_regression__helium_by_conf;
@@ -354,7 +354,7 @@ ORDER BY `artifacts`.`created` DESC , `failed tests` DESC , `passed tests` DESC;
 END $$
 
 
-create definer = test_user@localhost procedure refresh_mv_compiler_regression__helium_links()
+CREATE DEFINER = test_user@localhost PROCEDURE refresh_mv_compiler_regression__helium_links()
 BEGIN
 START TRANSACTION;
   DELETE FROM mv_compiler_regression__helium_links;
@@ -395,7 +395,7 @@ START TRANSACTION;
 END $$
 
 
-create definer = test_user@localhost procedure refresh_mv_compiler_regression__helium_sum_by_build()
+CREATE DEFINER = test_user@localhost PROCEDURE refresh_mv_compiler_regression__helium_sum_by_build()
 BEGIN
 START TRANSACTION;
   DELETE FROM mv_compiler_regression__helium_sum_by_build;
@@ -470,7 +470,7 @@ START TRANSACTION;
 END $$
 
 
-create definer = test_user@localhost procedure refresh_mv_compiler_regression__urisc_by_branch()
+CREATE DEFINER = test_user@localhost PROCEDURE refresh_mv_compiler_regression__urisc_by_branch()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__urisc_by_branch;
@@ -502,7 +502,7 @@ BEGIN
 END $$
 
 
-create definer = test_user@localhost procedure refresh_mv_compiler_regression__urisc_links()
+CREATE DEFINER = test_user@localhost PROCEDURE refresh_mv_compiler_regression__urisc_links()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__urisc_links;
@@ -543,7 +543,7 @@ BEGIN
 END $$
 
 
-create definer = test_user@localhost procedure refresh_mv_compiler_regression__urisc_sum_by_build()
+CREATE DEFINER = test_user@localhost PROCEDURE refresh_mv_compiler_regression__urisc_sum_by_build()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__urisc_sum_by_build;
@@ -590,7 +590,7 @@ BEGIN
 END $$
 
 
-create definer = test_user@localhost procedure refresh_mv_compiler_regression__uvliw_by_branch()
+CREATE DEFINER = test_user@localhost PROCEDURE refresh_mv_compiler_regression__uvliw_by_branch()
 BEGIN
 	START TRANSACTION;
 		DELETE FROM mv_compiler_regression__uvliw_by_branch;
@@ -622,7 +622,7 @@ BEGIN
 END $$
 
 
-create definer = test_user@localhost procedure refresh_mv_compiler_regression__uvliw_links()
+CREATE DEFINER = test_user@localhost PROCEDURE refresh_mv_compiler_regression__uvliw_links()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__uvliw_links;
@@ -662,7 +662,7 @@ BEGIN
 END $$
 
 
-create definer = test_user@localhost procedure refresh_mv_compiler_regression__uvliw_sum_by_build()
+CREATE DEFINER = test_user@localhost PROCEDURE refresh_mv_compiler_regression__uvliw_sum_by_build()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__uvliw_sum_by_build;
@@ -708,8 +708,8 @@ BEGIN
 	COMMIT;
 END $$
 
-create
-    definer = test_user@localhost procedure refresh_mv_debugger_regression__urisc_all()
+CREATE
+    DEFINER = test_user@localhost PROCEDURE refresh_mv_debugger_regression__urisc_all()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_debugger_regression__urisc_all;
@@ -744,12 +744,12 @@ BEGIN
         INNER JOIN `cl_status` ON  ((`tests`.`status_id` = `cl_status`.`id`)))
 	WHERE
 		(`artifacts_ip`.`name` LIKE 'codasip_urisc') AND
-	    (`artifacts_ip`.`configuration` is null) AND
+	    (`artifacts_ip`.`configuration` IS NULL) AND
 		(`tests`.`tool` = 'debugger') AND
 		(`tests`.`kind` = 'regression') AND
-	    (`cl_status`.`description` is not null)
+	    (`cl_status`.`description` IS NOT NULL)
 	ORDER BY `artifacts`.`created` DESC;
 	COMMIT;
 END $$
 
-delimiter ;
+DELIMITER ;
