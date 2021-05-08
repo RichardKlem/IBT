@@ -1,5 +1,5 @@
 delimiter $$
-create definer = rklem@localhost procedure refresh_mv_compiler_regression__berkelium_by_conf()
+create definer = test_user@localhost procedure refresh_mv_compiler_regression__berkelium_by_conf()
 BEGIN
 START TRANSACTION;
   DELETE FROM mv_compiler_regression__berkelium_conf;
@@ -34,7 +34,7 @@ COMMIT;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_compiler_regression__berkelium_links()
+create definer = test_user@localhost procedure refresh_mv_compiler_regression__berkelium_links()
 BEGIN
 START TRANSACTION;
 DELETE FROM mv_compiler_regression__berkelium_links;
@@ -76,7 +76,7 @@ DELETE FROM mv_compiler_regression__berkelium_links;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_compiler_regression__berkelium_sum_by_build()
+create definer = test_user@localhost procedure refresh_mv_compiler_regression__berkelium_sum_by_build()
 BEGIN
   START TRANSACTION;
   DELETE FROM mv_compiler_regression__berkelium_sum_by_build;
@@ -151,7 +151,7 @@ BEGIN
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_compiler_regression__codix_by_ip()
+create definer = test_user@localhost procedure refresh_mv_compiler_regression__codix_by_ip()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__codix_by_ip;
@@ -191,7 +191,7 @@ BEGIN
 COMMIT;
 END $$
 
-create definer = rklem@localhost procedure refresh_mv_compiler_regression__codix_links()
+create definer = test_user@localhost procedure refresh_mv_compiler_regression__codix_links()
 BEGIN
 START TRANSACTION;
 DELETE FROM mv_compiler_regression__codix_links;
@@ -237,7 +237,7 @@ DELETE FROM mv_compiler_regression__codix_links;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_compiler_regression__custom_by_ip()
+create definer = test_user@localhost procedure refresh_mv_compiler_regression__custom_by_ip()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__custom_by_ip;
@@ -275,7 +275,7 @@ BEGIN
 COMMIT;
 END $$
 
-create definer = rklem@localhost procedure refresh_mv_compiler_regression__custom_links()
+create definer = test_user@localhost procedure refresh_mv_compiler_regression__custom_links()
 BEGIN
 START TRANSACTION;
 DELETE FROM mv_compiler_regression__custom_links;
@@ -320,7 +320,7 @@ DELETE FROM mv_compiler_regression__custom_links;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_compiler_regression__helium_by_conf()
+create definer = test_user@localhost procedure refresh_mv_compiler_regression__helium_by_conf()
 BEGIN
   START TRANSACTION;
   DELETE FROM mv_compiler_regression__helium_by_conf;
@@ -354,7 +354,7 @@ ORDER BY `artifacts`.`created` DESC , `failed tests` DESC , `passed tests` DESC;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_compiler_regression__helium_links()
+create definer = test_user@localhost procedure refresh_mv_compiler_regression__helium_links()
 BEGIN
 START TRANSACTION;
   DELETE FROM mv_compiler_regression__helium_links;
@@ -395,7 +395,7 @@ START TRANSACTION;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_compiler_regression__helium_sum_by_build()
+create definer = test_user@localhost procedure refresh_mv_compiler_regression__helium_sum_by_build()
 BEGIN
 START TRANSACTION;
   DELETE FROM mv_compiler_regression__helium_sum_by_build;
@@ -470,7 +470,7 @@ START TRANSACTION;
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_compiler_regression__urisc_by_branch()
+create definer = test_user@localhost procedure refresh_mv_compiler_regression__urisc_by_branch()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__urisc_by_branch;
@@ -502,7 +502,7 @@ BEGIN
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_compiler_regression__urisc_links()
+create definer = test_user@localhost procedure refresh_mv_compiler_regression__urisc_links()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__urisc_links;
@@ -543,7 +543,7 @@ BEGIN
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_compiler_regression__urisc_sum_by_build()
+create definer = test_user@localhost procedure refresh_mv_compiler_regression__urisc_sum_by_build()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__urisc_sum_by_build;
@@ -590,7 +590,7 @@ BEGIN
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_compiler_regression__uvliw_by_branch()
+create definer = test_user@localhost procedure refresh_mv_compiler_regression__uvliw_by_branch()
 BEGIN
 	START TRANSACTION;
 		DELETE FROM mv_compiler_regression__uvliw_by_branch;
@@ -622,7 +622,7 @@ BEGIN
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_compiler_regression__uvliw_links()
+create definer = test_user@localhost procedure refresh_mv_compiler_regression__uvliw_links()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__uvliw_links;
@@ -662,7 +662,7 @@ BEGIN
 END $$
 
 
-create definer = rklem@localhost procedure refresh_mv_compiler_regression__uvliw_sum_by_build()
+create definer = test_user@localhost procedure refresh_mv_compiler_regression__uvliw_sum_by_build()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_compiler_regression__uvliw_sum_by_build;
@@ -709,7 +709,7 @@ BEGIN
 END $$
 
 create
-    definer = rklem@localhost procedure refresh_mv_tests_debugger_regression__urisc_all()
+    definer = test_user@localhost procedure refresh_mv_debugger_regression__urisc_all()
 BEGIN
 	START TRANSACTION;
 	DELETE FROM mv_debugger_regression__urisc_all;

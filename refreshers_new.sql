@@ -1,6 +1,6 @@
 DELIMITER $$
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_compiler_regression__berkelium_by_conf()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__berkelium_by_conf()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -14,35 +14,39 @@ BEGIN
     DELETE FROM mv_compiler_regression__berkelium_conf WHERE DATE(date) >= @last_date;
     INSERT INTO mv_compiler_regression__berkelium_conf (date, version, build_id, model_name, configuration,
                                                         ip_branch, failed_tests, passed_tests)
-    SELECT artifacts.created          AS Date,
-           artifacts.version          AS version,
-           artifacts.build            AS build_id,
-           tests.design_path          AS model_name,
-           artifacts_ip.configuration AS configuration,
-           sources.branch             AS ip_branch,
-           SUM((CASE
-                    WHEN (tests.passed = 0) THEN 1
-                    ELSE 0
-               END))                  AS failed_tests,
-           SUM((CASE
-                    WHEN (tests.passed = 1) THEN 1
-                    ELSE 0
-               END))                  AS pased_tests
-    FROM (((tests_compiler AS tests
-        INNER JOIN sources ON ((tests.ip_id = sources.artifact_id)))
-        INNER JOIN artifacts ON ((tests.studio_id = artifacts.id)))
-             INNER JOIN artifacts_ip ON ((tests.ip_id = artifacts_ip.id)))
-    WHERE DATE(artifacts.created) >= @last_date AND
-          artifacts_ip.name = 'codix_berkelium'
-    GROUP BY artifacts.created, artifacts.version, artifacts.build, tests.design_path,
-             artifacts_ip.configuration, artifacts_ip.configuration, sources.branch
-    ORDER BY artifacts.created DESC, failed_tests DESC, pased_tests DESC;
+SELECT created                                         AS Date,
+       version                                         AS version,
+       build                                           AS build_id,
+       design_path                                     AS model_name,
+       configuration                                   AS configuration,
+       branch                                          AS ip_branch,
+       sum(CASE WHEN passed = 1 THEN count ELSE 0 END) as passed_tests,
+       sum(CASE WHEN passed = 0 THEN count ELSE 0 END) as failed_tests
+FROM (
+         SELECT artifacts.created,
+                artifacts.version,
+                artifacts.build,
+                tests.design_path,
+                artifacts_ip.configuration,
+                sources.branch,
+                passed,
+                count(passed) as count
+         FROM (((tests_compiler AS tests
+             INNER JOIN artifacts USE INDEX (ix_artifacts_created) ON tests.studio_id = artifacts.id)
+             INNER JOIN sources ON tests.ip_id = sources.artifact_id)
+                  INNER JOIN artifacts_ip ON tests.ip_id = artifacts_ip.id)
+         WHERE DATE(artifacts.created) >= @last_date
+           AND artifacts_ip.name = 'codix_berkelium'
+         GROUP BY created, version, build, design_path, configuration, branch, passed) as t
+
+GROUP BY created, version, build, design_path, configuration, branch
+ORDER BY created DESC, failed_tests DESC, passed_tests DESC;
     COMMIT;
 END $$
 
 
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_compiler_regression__berkelium_links()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__berkelium_links()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -67,10 +71,8 @@ BEGIN
            artifacts_ip.configuration AS configuration,
            tests.parameters           AS parameters,
            cl_status.DESCription      AS test_status,
-              CONCAT('https://codasip3.codasip.com/~jenkinsdata/',
-                     REPLACE(tests.link,
-                             'mastermind_data/',
-                             ''))           AS link_full
+           CONCAT('https://codasip3.codasip.com/~jenkinsdata/',
+                 REPLACE(tests.link, 'mastermind_data/',''))           AS link_full
     FROM ((((((tests_compiler AS tests
         INNER JOIN artifacts ON ((tests.studio_id = artifacts.id)))
         INNER JOIN sources ON ((tests.ip_id = sources.artifact_id)))
@@ -88,7 +90,7 @@ END $$
 
 
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_compiler_regression__berkelium_sum_by_build()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__berkelium_sum_by_build()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -139,7 +141,7 @@ BEGIN
                     ELSE 0
                END))                  AS sum_tests_ca
     FROM (((tests_compiler AS tests
-        INNER JOIN artifacts ON tests.studio_id = artifacts.id)
+        INNER JOIN artifacts USE INDEX (ix_artifacts_created) ON tests.studio_id = artifacts.id)
         INNER JOIN artifacts_studio ON tests.studio_id = artifacts_studio.id)
              INNER JOIN artifacts_ip ON tests.ip_id = artifacts_ip.id)
     WHERE DATE(artifacts.created) >= @last_date AND
@@ -150,7 +152,7 @@ END $$
 
 
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_compiler_regression__codix_by_ip()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__codix_by_ip()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -172,9 +174,9 @@ BEGIN
            sum((CASE WHEN (tests.passed = 0) THEN 1 ELSE 0 END)) AS failed_tests,
            sum((CASE WHEN (tests.passed = 1) THEN 1 ELSE 0 END)) AS passed_tests
     FROM (((tests_compiler AS tests
-        INNER JOIN sources ON tests.ip_id = sources.artifact_id)
         INNER JOIN artifacts ON tests.studio_id = artifacts.id)
-             INNER JOIN artifacts_ip ON tests.ip_id = artifacts_ip.id)
+        INNER JOIN sources ON tests.ip_id = sources.artifact_id)
+        INNER JOIN artifacts_ip ON tests.ip_id = artifacts_ip.id)
     WHERE DATE(artifacts.created) >= @last_date AND
           (artifacts_ip.name = 'codix_cobalt' OR artifacts_ip.name = 'codix_titanium')
     GROUP BY artifacts.created,
@@ -189,7 +191,7 @@ BEGIN
 END $$
 
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_compiler_regression__codix_links()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__codix_links()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -223,7 +225,7 @@ BEGIN
              INNER JOIN cl_status ON tests.status_id = cl_status.id)
     WHERE DATE(artifacts.created) >= @last_date AND
           tests.passed = 0 AND
-          tests.link is not null AND
+          tests.link IS NOT NULL AND
           (artifacts_ip.name = 'codix_cobalt' OR artifacts_ip.name = 'codix_titanium')
     ORDER BY artifacts.created DESC;
     COMMIT;
@@ -231,7 +233,7 @@ END $$
 
 
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_compiler_regression__custom_by_ip()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__custom_by_ip()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -270,7 +272,7 @@ BEGIN
 END $$
 
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_compiler_regression__custom_links()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__custom_links()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -301,10 +303,10 @@ BEGIN
         INNER JOIN artifacts_studio ON tests.studio_id = artifacts_studio.id)
         INNER JOIN cl_environments ON artifacts_studio.environment_id = cl_environments.id)
         INNER JOIN artifacts_ip ON tests.ip_id = artifacts_ip.id)
-             INNER JOIN cl_status ON tests.status_id = cl_status.id)
+        INNER JOIN cl_status ON tests.status_id = cl_status.id)
     WHERE DATE(artifacts.created) >= @last_date AND
           tests.passed = 0 AND
-          tests.link is not null AND
+          tests.link IS NOT NULL AND
           (artifacts_ip.name = 'sigma_dk_bb700' OR artifacts_ip.name = 'sigma_dk_p700')
     ORDER BY artifacts.created DESC;
     COMMIT;
@@ -312,7 +314,7 @@ END $$
 
 
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_compiler_regression__helium_by_conf()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__helium_by_conf()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -345,7 +347,7 @@ BEGIN
              INNER JOIN artifacts_ip ON ((tests.ip_id = artifacts_ip.id)))
     WHERE DATE(artifacts.created) >= @last_date AND
           artifacts_ip.name = 'codix_helium'
-    GROUP BY artifacts.created DESC, artifacts.version, artifacts.build, tests.design_path,
+    GROUP BY artifacts.created, artifacts.version, artifacts.build, tests.design_path,
              artifacts_ip.configuration
     ORDER BY artifacts.created DESC, failed_tests DESC, passed_tests DESC;
     COMMIT;
@@ -353,7 +355,7 @@ END $$
 
 
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_compiler_regression__helium_links()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__helium_links()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -385,7 +387,7 @@ BEGIN
         INNER JOIN artifacts_studio ON ((tests.studio_id = artifacts_studio.id)))
         INNER JOIN cl_environments ON ((artifacts_studio.environment_id = cl_environments.id)))
         INNER JOIN artifacts_ip ON ((tests.ip_id = artifacts_ip.id)))
-             INNER JOIN cl_status ON ((tests.status_id = cl_status.id)))
+        INNER JOIN cl_status ON ((tests.status_id = cl_status.id)))
     WHERE DATE(artifacts.created) >= @last_date AND
           (tests.passed = 0)
       AND (tests.link IS NOT NULL)
@@ -396,7 +398,7 @@ END $$
 
 
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_compiler_regression__helium_sum_by_build()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__helium_sum_by_build()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -438,24 +440,14 @@ BEGIN
                     ELSE 0
                END))                  AS sum_tests_ia,
            SUM((CASE
-                    WHEN
-                        ((tests.passed = 0)
-                            AND
-                         tests.design_path = 'codix_helium-ca')
-                        THEN
-                        1
-                    ELSE 0
-               END))                  AS failed_tests_ca,
+                    WHEN ((tests.passed = 0) AND tests.design_path = 'codix_helium-ca') THEN 1
+                    ELSE 0 END))                  AS failed_tests_ca,
            SUM(CASE
-                   WHEN tests.passed = 1 AND tests.design_path = 'codix_helium-ca'
-                       THEN 1
-                   ELSE 0
-               END)                   AS passed_tests_ca,
+                   WHEN tests.passed = 1 AND tests.design_path = 'codix_helium-ca' THEN 1
+                   ELSE 0 END)                   AS passed_tests_ca,
            SUM(CASE
-                   WHEN tests.design_path = 'codix_helium-ca'
-                       THEN 1
-                   ELSE 0
-               END)                   AS sum_tests_ca
+                   WHEN tests.design_path = 'codix_helium-ca' THEN 1
+                   ELSE 0 END)                   AS sum_tests_ca
     FROM (((tests_compiler AS tests
         INNER JOIN artifacts ON ((tests.studio_id = artifacts.id)))
         INNER JOIN artifacts_studio ON ((tests.studio_id = artifacts_studio.id)))
@@ -468,7 +460,7 @@ END $$
 
 
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_compiler_regression__urisc_by_branch()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__urisc_by_branch()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -497,7 +489,7 @@ BEGIN
                END))         AS passed_tests
     FROM (((tests_compiler AS tests
         INNER JOIN sources ON ((tests.ip_id = sources.artifact_id)))
-        INNER JOIN artifacts ON ((tests.studio_id = artifacts.id)))
+        INNER JOIN artifacts USE INDEX (ix_artifacts_created) ON ((tests.studio_id = artifacts.id)))
              INNER JOIN artifacts_ip ON ((tests.ip_id = artifacts_ip.id)))
     WHERE DATE(artifacts.created) >= @last_date AND
           artifacts_ip.name = 'codasip_urisc'
@@ -509,7 +501,7 @@ END $$
 
 
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_compiler_regression__urisc_links()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__urisc_links()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -553,7 +545,7 @@ END $$
 
 
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_compiler_regression__urisc_sum_by_build()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__urisc_sum_by_build()
 BEGIN
     START TRANSACTION;
     -- Get the day of the latest records.
@@ -566,42 +558,42 @@ BEGIN
         SET @last_date = '2012-12-31';
     END IF;
     DELETE FROM mv_compiler_regression__urisc_sum_by_build WHERE DATE(date) >= @last_date;
-    INSERT INTO mv_compiler_regression__urisc_sum_by_build (`date`, `version_build_id`, `failed_tests_ia`,
-                                                            `passed_tests_ia`, `sum_tests_ia`, `failed_tests_ca`,
-                                                            `passed_tests_ca`, `sum_tests_ca`)
+    INSERT INTO mv_compiler_regression__urisc_sum_by_build (date, version_build_id, failed_tests_ia,
+                                                            passed_tests_ia, sum_tests_ia, failed_tests_ca,
+                                                            passed_tests_ca, sum_tests_ca)
 
-    SELECT created             AS `date`,
+    SELECT created             AS date,
            build_id,
            sum(CASE
-                   WHEN passed = 0 AND (design_path = 'codasip_urisc.ia' OR design_path = 'codasip_urisc-ia') THEN count
+                   WHEN passed = 0 AND design_path = 'codasip_urisc-ia' THEN count
                    ELSE 0 END) AS failed_ia,
            sum(CASE
-                   WHEN passed = 1 AND (design_path = 'codasip_urisc.ia' OR design_path = 'codasip_urisc-ia') THEN count
+                   WHEN passed = 1 AND design_path = 'codasip_urisc-ia' THEN count
                    ELSE 0 END) AS passed_ia,
            sum(CASE
-                   WHEN design_path = 'codasip_urisc.ia' OR design_path = 'codasip_urisc-ia' THEN count
+                   WHEN design_path = 'codasip_urisc-ia' THEN count
                    ELSE 0 END) AS total_ia,
            sum(CASE
-                   WHEN passed = 0 AND (design_path = 'codasip_urisc.ca' OR design_path = 'codasip_urisc-ca') THEN count
+                   WHEN passed = 0 AND design_path = 'codasip_urisc-ca' THEN count
                    ELSE 0 END) AS failed_ca,
            sum(CASE
-                   WHEN passed = 1 AND (design_path = 'codasip_urisc.ca' OR design_path = 'codasip_urisc-ca') THEN count
+                   WHEN passed = 1 AND design_path = 'codasip_urisc-ca' THEN count
                    ELSE 0 END) AS passed_ca,
            sum(CASE
-                   WHEN design_path = 'codasip_urisc.ca' OR design_path = 'codasip_urisc-ca' THEN count
+                   WHEN design_path = 'codasip_urisc-ca' THEN count
                    ELSE 0 END) AS total_ca
 
     FROM (SELECT artifacts.created,
                  CONCAT_WS('-', artifacts.version, NULL, artifacts.build) AS build_id,
                  design_path,
                  passed,
-                 count(passed)                                            AS `count`
-          FROM (`tests_compiler` tests
+                 count(passed)                                            AS count
+          FROM (tests_compiler tests
                    INNER JOIN
-               `artifacts` use index (ix_artifacts_created) ON ((`tests`.`studio_id` = `artifacts`.`id`))
-                   INNER JOIN `artifacts_ip` ON ((`tests`.`ip_id` = `artifacts_ip`.`id`)))
+               artifacts USE INDEX (ix_artifacts_created) ON ((tests.studio_id = artifacts.id))
+                   INNER JOIN artifacts_ip ON ((tests.ip_id = artifacts_ip.id)))
           WHERE DATE(artifacts.created) >= @last_date
-            AND `artifacts_ip`.`name` = 'codasip_urisc'
+            AND artifacts_ip.name = 'codasip_urisc'
           GROUP BY artifacts.created, build_id, design_path, passed) AS t
     GROUP BY created, build_id;
     COMMIT;
@@ -609,7 +601,7 @@ END $$
 
 
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_compiler_regression__uvliw_by_branch()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__uvliw_by_branch()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -637,7 +629,7 @@ BEGIN
                END))         AS passed_tests
     FROM (((tests_compiler AS tests
         INNER JOIN sources ON ((tests.ip_id = sources.artifact_id)))
-        INNER JOIN artifacts ON ((tests.studio_id = artifacts.id)))
+        INNER JOIN artifacts USE INDEX (ix_artifacts_created) ON ((tests.studio_id = artifacts.id)))
              INNER JOIN artifacts_ip ON ((tests.ip_id = artifacts_ip.id)))
     WHERE DATE(artifacts.created) >= @last_date AND
           artifacts_ip.name = 'codasip_uvliw'
@@ -649,7 +641,7 @@ END $$
 
 
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_compiler_regression__uvliw_links()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__uvliw_links()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -693,7 +685,7 @@ END $$
 
 
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_compiler_regression__uvliw_sum_by_build()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_compiler_regression__uvliw_sum_by_build()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -740,7 +732,7 @@ BEGIN
                END))                                                AS sum_tests_ca
 
     FROM (tests_compiler AS tests
-             INNER JOIN artifacts ON ((tests.studio_id = artifacts.id))
+             INNER JOIN artifacts USE INDEX (ix_artifacts_created) ON ((tests.studio_id = artifacts.id))
              INNER JOIN artifacts_studio ON ((tests.studio_id = artifacts_studio.id))
              INNER JOIN artifacts_ip ON ((tests.ip_id = artifacts_ip.id)))
     WHERE DATE(artifacts.created) >= @last_date AND
@@ -751,7 +743,7 @@ END $$
 
 
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_new_mv_debugger_regression__urisc_all()
+    definer = test_user@localhost PROCEDURE refresh_new_mv_debugger_regression__urisc_all()
 BEGIN
     START TRANSACTION;
     SET @last_date = (SELECT MAX(DATE(date))
@@ -782,7 +774,7 @@ BEGIN
                              'mastermind_data/',
                              ''))         AS link_full
     FROM (((((((tests_rest AS tests
-        INNER JOIN artifacts ON tests.studio_id = artifacts.id)
+        INNER JOIN artifacts USE INDEX (ix_artifacts_created) ON tests.studio_id = artifacts.id)
         INNER JOIN sources ON tests.ip_id = sources.artifact_id)
         INNER JOIN artifacts_session ON tests.session_id = artifacts_session.id)
         INNER JOIN artifacts_studio ON tests.studio_id = artifacts_studio.id)
@@ -802,7 +794,7 @@ END $$
 # Wrapper PROCEDURE to gather and log information about every MV refresher call.
 DROP PROCEDURE IF exists refresh_wrapper;
 CREATE
-    definer = rklem@localhost PROCEDURE refresh_wrapper(IN proc1 varchar(100))
+    definer = test_user@localhost PROCEDURE refresh_wrapper(IN proc1 varchar(100))
 BEGIN
     DECLARE code CHAR(5) DEFAULT '00000';
     DECLARE msg TEXT;
