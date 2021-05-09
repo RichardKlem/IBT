@@ -1,13 +1,11 @@
 #!/bin/bash
 
 
-# Change DB name according to your preferences.
-DB_NAME="dep_test"
+DB_NAME="xklemr00_IBT"
 DB_NAME_OLD="${DB_NAME}_old"
 DB_NAME_NEW="${DB_NAME}_new"
 
-# ----------------------------------------------------------------------------------------------------------------------
-# Creates old and new DB schema, grant privileges.
+# Creates old and new databases, create new user test_user and grant privileges.
 mysql -e"set @db_name = '$DB_NAME'; \. init.sql"
 # Create OLD schema tables and procedures
 mysql -D $DB_NAME_OLD < data_tables.sql
@@ -33,7 +31,6 @@ mysql -D $DB_NAME_NEW < artifacts_ip.sql
 mysql -D $DB_NAME_NEW < artifacts_session.sql
 mysql -D $DB_NAME_NEW < artifacts_studio.sql
 
-# -------------------------------------------------------------------------------------------
 # Choose one:
 #   tests_IDmod_100.sql is about 1 million rows,
 #   tests_IDmod_1000.sql is about 100k rows.
@@ -41,3 +38,9 @@ mysql -D $DB_NAME_NEW < artifacts_studio.sql
 # rows. This data load is split into smaller files. You can choose how many data you want.
 # Note: Full data load took me on my machine about one day to complete.
 mysql -D $DB_NAME_OLD < tests_IDmod_1000.sql
+
+# Transfer data to the new schema.
+mysql -D $DB_NAME_OLD < data_model_transfer.sql
+
+# Run testing
+mysql -D $DB_NAME_OLD < test.sql
