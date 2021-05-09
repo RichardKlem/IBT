@@ -4,11 +4,7 @@ create table artifacts
     version varchar(10) null,
     build   varchar(45) null,
     created datetime    null,
-    type    varchar(10) null,
-    index ix_artifacts_build (build),
-    index ix_artifacts_created (created),
-    index ix_artifacts_type (type),
-    index ix_artifacts_version (version)
+    type    varchar(10) null
 );
 
 
@@ -19,9 +15,7 @@ create table artifacts_ip
     configuration varchar(50) null,
     constraint artifacts_ip_ibfk_1
         foreign key (id) references artifacts (id)
-            on delete cascade,
-    index ix_artifacts_ip_configuration (configuration),
-    index ix_artifacts_ip_name (name)
+            on delete cascade
 );
 
 
@@ -34,12 +28,14 @@ create table cl_environments
     supported tinyint(1)  null
 );
 
+
 create table cl_status
 (
     id          int auto_increment primary key,
     code        varchar(100) null,
     description varchar(500) null
 );
+
 
 create table artifacts_session
 (
@@ -74,9 +70,7 @@ create table artifacts_studio
     constraint artifacts_studio_ibfk_2
         foreign key (status_id) references cl_status (id),
     constraint artifacts_studio_ibfk_3
-        foreign key (environment_id) references cl_environments (id),
-    index ix_artifacts_studio_build_number (build_number),
-    index ix_artifacts_studio_build_type (build_type)
+        foreign key (environment_id) references cl_environments (id)
 );
 
 
@@ -89,8 +83,7 @@ create table sources
     artifact_id bigint       null,
     constraint sources_ibfk_1
         foreign key (artifact_id) references artifacts (id)
-            on delete cascade,
-    index ix_sources_branch (branch)
+            on delete cascade
 );
 
 
@@ -116,13 +109,5 @@ create table tests
     constraint tests_ibfk_3
         foreign key (session_id) references artifacts (id),
     constraint tests_ibfk_4
-        foreign key (status_id) references cl_status (id),
-
-    index ix_tests_design_path (design_path),
-    index ix_tests_kind (kind),
-    index ix_tests_name (name),
-    index ix_tests_parameters (parameters),
-    index ix_tests_tool (tool),
-    index ix_tests_type (type),
-    index ix_tests_tool_kind (tool, kind)
+        foreign key (status_id) references cl_status (id)
 );
