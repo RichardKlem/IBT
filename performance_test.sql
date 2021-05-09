@@ -3,7 +3,7 @@ DROP PROCEDURE IF EXISTS test_refreshers;
 DELIMITER $$
 CREATE PROCEDURE test_refreshers()
 BEGIN
-    DECLARE v1 INT DEFAULT 2;
+    DECLARE v1 INT DEFAULT 10;
 
     WHILE v1 > 0 DO
         call refresh_wrapper('refresh_mv_compiler_regression__codix_by_ip');
@@ -36,7 +36,7 @@ DROP PROCEDURE IF EXISTS test_refreshers;
 DELIMITER $$
 CREATE PROCEDURE test_refreshers()
 BEGIN
-    DECLARE v1 INT DEFAULT 2;
+    DECLARE v1 INT DEFAULT 10;
 
     WHILE v1 > 0 DO
         call refresh_wrapper('refresh_new_mv_compiler_regression__codix_by_ip');
