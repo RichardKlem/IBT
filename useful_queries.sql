@@ -3,6 +3,7 @@ select user(); select current_user();
 
 -- Show privileges
 SELECT host,user,Grant_priv,Super_priv FROM mysql.user;
+SELECT * FROM mysql.user where User = 'rklem';
 -- Update privileges etc.
 UPDATE mysql.user SET Grant_priv='Y' WHERE User='rklem';
 FLUSH PRIVILEGES;
@@ -21,7 +22,7 @@ SHOW PROFILES;
 SELECT * FROM INFORMATION_SCHEMA.PROFILING WHERE QUERY_ID = 109;
 
 -- Show table information like rows etc.
-show table status like 'tests';
+show table status like 'mv%';
 
 -- Disable foreign keys check
 SET FOREIGN_KEY_CHECKS = 1;

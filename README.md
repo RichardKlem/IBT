@@ -81,6 +81,9 @@ umístěný ve složce `source_codes`.
 4. Následné spuštění výchozího skriptu provedete příkazem: `./run.sh`.
 
 ### Výstup
+V průběhu vykonávání je uživatel informován o průbehu vytváření databázových<br>
+objektů, manipulace s daty, spouštění testování apod.
+
 Po doběhutí všech skriptů se zobrazí výsledek statistik. Ten má však omezenou<br>
 vypovídající hodnotu, protože řešení je navrženo pro velké objemy dat a pro malé<br>
 objemy nemusí generovat prezentované výsledky. Dostupné datasety slouží spíše<br>
