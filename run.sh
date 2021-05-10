@@ -39,7 +39,7 @@ mysql -D $DB_NAME_NEW < artifacts_studio.sql
 # Note: Full data load took me on my machine about one day to complete.
 
 mysql -D $DB_NAME_OLD < tests_IDmod_1000.sql  # Took 7 minutes on my machine.
-#mysql -D $DB_NAME_OLD < tests_IDmod_100.sql
+#mysql -D $DB_NAME_OLD < tests_IDmod_100.sql  # Took 2 hours on my machine.
 
 # Transfer data to the new schema.
 mysql -D $DB_NAME_OLD < data_model_transfer.sql
