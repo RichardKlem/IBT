@@ -37,8 +37,9 @@ mysql -D $DB_NAME_NEW < artifacts_studio.sql
 # Or you can choose full referential data load which has around 30 millions
 # rows. This data load is split into smaller files. You can choose how many data you want.
 # Note: Full data load took me on my machine about one day to complete.
-#mysql -D $DB_NAME_OLD < tests_IDmod_1000.sql  # Took 7 minutes on my machine.
-mysql -D $DB_NAME_OLD < tests_IDmod_100.sql
+
+mysql -D $DB_NAME_OLD < tests_IDmod_1000.sql  # Took 7 minutes on my machine.
+#mysql -D $DB_NAME_OLD < tests_IDmod_100.sql
 
 # Transfer data to the new schema.
 mysql -D $DB_NAME_OLD < data_model_transfer.sql
