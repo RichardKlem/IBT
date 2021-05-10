@@ -1,8 +1,11 @@
 # IBT
+
 Dokumentace k práci i zdrojovým kódům.
 
 ## Technická zpráva
+
 ### Obecné informace
+
 Ústav: Ústav informačních systémů (UIFS)<br>
 Akademický rok: 2020/2021<br>
 Číslo zadání: 24133<br>
@@ -33,7 +36,9 @@ Datum schválení: 24. října 2020<br>
 5. Zhodnoťte dosažené výsledky.
 
 ## Implementace řešení - zdrojové kódy
+
 ### Prerekvizity
+
 Pro spuštění skriptů a testování je nutné mít nainstalovaný a plně funkční<br>
 MySQL verze 5.7.x. Řešení bylo testováno na verzi 5.7.34. Pro spuštění skriptů<br>
 je nutné pouštět skripty jako takový užovatel, který má právo na vytváření<br>
@@ -52,8 +57,7 @@ v jazyce Shell. Shell skript provede jednoduché nastavení proměnných prostř
 a spustí SQL skripty ve specifickém pořadí. Výstupem tohoto procesu je pak:
 
 - vytvoření testovácího uživatele `test_user` s heslem `12test5user`,
-- kompletní vytvoření dvojice schémat pro původní referenční řešení i řešení
-  nové,
+- kompletní vytvoření dvojice schémat pro původní referenční řešení i řešení nové,
 - naplnění databází ukázkovými daty,
 - transformace datového modelu,
 - aktualizace dat po úpravě nového modelu,
@@ -70,9 +74,10 @@ Celý proces je plně zautomatizován. Jako výchozí skript slouží skript `ru
 umístěný ve složce `source_codes`.
 
 ### Spuštění
+
 1. Přesuňte se do složky `source_codes`.
 2. Pokud nemá soubor `run.sh` správně nastavená práva pro spuštění, je potřeba<br>
-    tato práva udělit, např. příkazem: `chmod +x run.sh`.
+   tato práva udělit, např. příkazem: `chmod +x run.sh`.
 3. V základním nastavení se databáze naplní daty o objemu jedné tisíciny<br>
    testovacího datasetu. V případě, že máte zájem naplnit data o objemu jedné<br>
    setiny, otevřete soubor `run.sh` a upravte řádek 41 a 42 a zvolte požadovanou<br>
@@ -81,6 +86,7 @@ umístěný ve složce `source_codes`.
 4. Následné spuštění výchozího skriptu provedete příkazem: `./run.sh`.
 
 ### Výstup
+
 V průběhu vykonávání je uživatel informován o průbehu vytváření databázových<br>
 objektů, manipulace s daty, spouštění testování apod.
 
